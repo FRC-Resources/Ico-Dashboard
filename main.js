@@ -1,14 +1,18 @@
-const { app, BrowserWindow, Menu, ipcMain, shell, ipcRenderer } = require("electron");
-const path = require("path");
-const config = require("./config.json");
-const { autoUpdater } = require("electron-updater");
-const log = require("electron-log");
-// add auto updater and toast messages for updates and errors
+const { app, BrowserWindow, Menu, ipcMain, shell } = require('electron');
+const path = require('path');
+const config = require('./config.json');
+const { autoUpdater } = require('electron-updater');
+const log = require('electron-log');
+const settings = require('./assets/js/settings.js');
 
 function createWindow() {
+  const bounds = settings.getWindowSize();
+  const position = settings.getWindowPositon();
+  console.log(bounds);
+  console.log(position);
   const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: bounds[0],
+    height: bounds[1],
     show: false,
     frame: true,
     webPreferences: {
@@ -16,6 +20,7 @@ function createWindow() {
       contextIsolation: false,
     },
   });
+  mainWindow.setPosition(position[0], position[1]);
   const splashWindow = new BrowserWindow({
     width: 256,
     height: 256,
@@ -112,9 +117,19 @@ function createWindow() {
         ]
       }
     ])
-    
     Menu.setApplicationMenu(menu);
   }
+  function getMainWindow(){
+    return mainWindow;
+  }
+
+  // Window resize memory
+  mainWindow.on("resized", () => {
+    settings.saveBounds(mainWindow.getSize());
+  })
+  mainWindow.on("moved", () => {
+    settings.savePosition(mainWindow.getPosition());
+  })
 }
 app.on("ready", () => setTimeout(createWindow, 400));
 //app.disableHardwareAcceleration();

@@ -1,7 +1,7 @@
 //Required and config
 const electron = require('electron');
 const {ipcRenderer} = electron;
-const ntClient = require("wolfbyte-networktables");
+const ntClient = require('wolfbyte-networktables');
 const client = new ntClient.Client();
 var config = null;
 try {
@@ -19,9 +19,6 @@ var savedTeamNumber = null;
 const teamNumberTextParagraph = document.getElementById('teamNumberText');
 teamNumberText = document.createTextNode(null);
 teamNumberTextParagraph.appendChild(teamNumberText);
-
-//FMS and teleop, auto, test, practice; setup
-var SetFMSMode = "standard";
 
 //Camera system setup
 const connectBtn = document.getElementById('connectBtn');
@@ -62,7 +59,6 @@ function submitIPForm(e) {
 
 //Team number changes
 ipcRenderer.on('teamNumber:is', function(e, teamNumber) {
-  console.log("ran")
   console.log("Team number is: "+ teamNumber)
   savedTeamNumber = teamNumber;
   teamNumberText = document.createTextNode('Team Number: ' + teamNumber);
