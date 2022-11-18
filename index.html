@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Ico Dashboard</title>
+    <script src="./assets/js/welcome.js"></script>
+    <script defer src = ",/assets/js/index.js"></script>
+    <link rel="stylesheet" href="./assets/css/nav.css">
+    <link rel="stylesheet" href="./assets/css/main.css">
+    <link rel="stylesheet" href="./assets/css/fontawesome-free-6.2.0-web/css/all.css">
+    <link rel="stylesheet" href="./assets/css/nav.css">
+    <link rel="stylesheet" href="./assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  </head>
+  <body>
+    <!-- navbar -->
+    
+    <!-- actual dashboard -->
+    <div class="columns">
+        <div class="column">
+            <div class="box">
+                <p>Welcome to Foundation, an FRC-Resources Driver Station.</p>
+                <p id="teamNumberText">Team Number: </p>
+                <br/>
+                <div class="box">
+                    <img src="./assets/img/no-cam-feed.jpg" id="videoStream" width="1080px"></img>
+                </div>
+                
+                <form id="IPandPortForm">
+                    <div class="field">
+                        <input class="input" type="text" id="IPandPort" placeholder="Enter IP:Port or Use Default" autofocus required/>
+                    </div>
+                </form>
+                <br>
+                <div class="field">
+                    <button id="connectBtn" class="button is-success"  type="onclick">Connect</button>
+                    <button id="disconnectBtn" type="onclick" class="button is-warning">Disconnect</button>
+                </div>
+            </div>
+        </div>
+        <div class="column">
+            <div class="box">
+                <table class="table is-striped table is-narrow is-bordered">
+                    <thead>
+                        <tr>
+                            <th colspan="2">Smartdashboard Data</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Battery Voltage</td>
+                            <td align="left" valign="top" style="overflow:hidden;" nowrap="nowrap" max-width="200px" width="200px"><span style="text-align: center;" id="BatteryVoltage"></span></td>
+                        </tr>
+                        <tr>
+                            <td id="SDB label"></td>
+						    <td id="SDB value"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <table class="table is-striped table is-narrow is-bordered">
+                    <thead>
+                        <tr>
+                            <th colspan="2">FMS & Mode Data</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Mode</td>
+                            <td align="left" valign="top" style="overflow:hidden;" nowrap="nowrap" max-width="200px" width="200px"><span style="text-align: center;" id="CurrentMode"></span></td>
+                        </tr>
+                        <tr>
+                            <td>FMS</td>
+                            <td align="left" valign="top" style="overflow:hidden;" nowrap="nowrap" max-width="200px" width="200px"><span style="text-align: center;" id="isFMSConnected"></span></td>
+                        </tr>
+                        <tr>
+                            <td>Allaince</td>
+                            <td align="left" valign="top" style="overflow:hidden;" nowrap="nowrap" max-width="200px" width="200px"><span style="text-align: center;" id="AllainceColour"></span></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <br>
+                <button id="connect" class="button is-success" onclick="connect()">connect</button>
+                <button id="connect" class="button is-link" onclick="console.log(values)">log values</button>
+            </div>
+        </div>
+      </div>
+          <div class="col-md-8">
+            <button type="button" class="btn btn-primary" onclick="addData();">Add Data</button></center>
+              <table class="table table-bordered">
+                  <thead class="alert-info">
+                      <tr>
+                          <th id="Smartdashboard Label"></th>
+                          <th id="Smartdashboard Value"></th>
+                      </tr>
+                  </thead>
+                  <tbody id="Smartdashboard Table Result"></tbody>
+              </table>
+          </div>
+      </div>
+</body>
+  <script src="./assets/js/Chart.js"></script>
+  <script src="./assets/js/index.js"></script>
+  <script src="./assets/js/nav.js"></script>
+  <script src="./assets/js/jquery-3.6.1.min.js"></script>
+  <script src="./assets/js/bootstrap.bundle.min.js"></script>
+</html>

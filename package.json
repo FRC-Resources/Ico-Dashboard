@@ -1,0 +1,37 @@
+{
+  "name": "ico",
+  "version": "2022.11.17",
+  "description": "An FRC dashboard built on electron",
+  "main": "main.js",
+  "author": "Autumn O. <62668093+Autumn-Ou@users.noreply.github.com>",
+  "license": "MIT",
+  "private": true,
+
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder build"
+  },
+  "devDependencies": {
+    "electron": "21.2.0",
+    "electron-builder": "^23.6.0"
+  },
+  "build": {
+    "win": {
+      "target": "portable",
+      "icon": "./assets/img/ico.ico"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "./assets/img/ico.icns"
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "./assets/img/ico.png"
+    }
+  },
+  "dependencies": {
+    "electron-log": "^4.4.8",
+    "electron-updater": "^5.3.0",
+    "wolfbyte-networktables": "^1.7.3"
+  }
+}

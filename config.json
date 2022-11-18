@@ -1,0 +1,7 @@
+{
+    "splashScreen": true,
+
+    "BatteryVoltageString": "/SmartDashboard/Bat. Volt.",
+
+    "FMSControlString": "/FMSInfo/FMSControlData"
+}
