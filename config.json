@@ -1,7 +1,7 @@
 {
     "splashScreen": true,
 
-    "BatteryVoltageString": "/SmartDashboard/Bat. Volt.",
+    "SmartdashboardIgnoreStrings": ["Field/.controllable", "Field/.type", "Field/.name"],
 
     "FMSControlString": "/FMSInfo/FMSControlData"
 }

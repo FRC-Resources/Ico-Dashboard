@@ -29,55 +29,6 @@ let IPandPortHTTP = null;
 disconnectBtn.addEventListener('click', disconectVideoStream);
 connectBtn.addEventListener('click', submitIPForm);
 
-//Battery voltage setup
-var values = [];
-var batteryVoltages = [];
-var ctx = document.getElementById("battery").getContext("2d");
-var myChart = new Chart(ctx, {
-  type: "line",
-  data: {
-    labels: batteryVoltages,
-    datasets: [
-      {
-        label: "Battery Voltage",
-        data: batteryVoltages,
-        backgroundColor: ["rgba(0, 255, 0, 0.2)"],
-        borderColor: ["rgba(255, 99, 132, 1)"],
-        borderWidth: 1,
-      },
-    ],
-  },
-  options: {
-    legend: { display: false },
-    scales: {
-      yAxes: [
-        {
-          ticks: {
-            min: 0,
-            max: 16,
-          },
-        },
-      ],
-      xAxes: [
-        {
-          display: false,
-          ticks: {
-            display: false,
-          },
-          gridLines: {
-            drawBorder: false,
-          },
-        },
-      ],
-    },
-    elements: {
-      point: {
-        radius: 0,
-      },
-    },
-  },
-});
-
 //Connect to camera
 function submitIPForm(e) {
     e.preventDefault();
@@ -94,6 +45,7 @@ function submitIPForm(e) {
 
 //Team number changes
 ipcRenderer.on('teamNumber:is', function(e, teamNumber) {
+  console.log("ran")
   console.log("Team number is: "+ teamNumber)
   savedTeamNumber = teamNumber;
   teamNumberText = document.createTextNode('Team Number: ' + teamNumber);
@@ -104,13 +56,8 @@ ipcRenderer.on('teamNumber:is', function(e, teamNumber) {
 function disconectVideoStream() {
   console.log('disconnect');
   img.src = './assets/img/no-cam-feed.jpg';
+  console.log(savedTeamNumber)
 }
-
-//FMS mode changes
-ipcRenderer.on('FMSMode:is', function(e, FMSMode) {
-    SetFMSMode = FMSMode;
-    console.log("FMSMode set to: "+ SetFMSMode)
-})
 
 //Network Table connection and output
 function connect() {
@@ -119,9 +66,6 @@ function connect() {
   }, "0.0.0.0");
 
   client.addListener((key, val, type, id) => {
-    if(key.startsWith("/Usage/Client/" == false)) {
-      console.log({ key, val, type, id });
-    }
     if (key.startsWith("/FMSInfo/")) {
       console.log({ key, val, type, id });
       if (key == "/FMSInfo/IsRedAlliance" && (id == "add" || id=="update")) {
@@ -187,19 +131,11 @@ function connect() {
     if (key.startsWith("/SmartDashboard/")) {
       console.log({ key, val, type, id });
       if (id == "add") {
+        addSmartDashboardData(key, val);
         var newKey = key.replace("/SmartDashboard/", "");
-        AddSmartDashboardData(key, val);
-        if (newKey.startsWith("Auto choices/")) {
-          //auto choices code
-        } else {
-          values.push(newKey);
-          document.getElementById("BatteryVoltage").innerHTML = val;
-        }
       }
-      if (key == config.BatteryVoltageString && id == "update") {
-          batteryVoltages.push(val);
-          myChart.update();
-          document.getElementById("BatteryVoltage").innerHTML = val;
+      if (id == "update") {
+        updateSmartDashboardData(key, val);
       }
     } else {
       return;
@@ -207,28 +143,20 @@ function connect() {
   });
 }
 
-function addData(Label, Value){
-  Label="aaa"
-  Value="BBB"
-		var html="";
-		
-		html="<tr><td>"+Label+"</td><td>"+Value+"</td></tr>";
-		
-		document.getElementById('Smartdashboard Table Result').innerHTML+=html;
- 
-		document.getElementById('Smartdashboard Label').value="";
-		document.getElementById('Smartdashboard Value').value=""; 
+function addSmartDashboardData(key, val){
+  key = key.slice(16)
+  console.log("ASMD ran, Label: "+key+" Value: "+val)
+  var html="";
+  
+  html="<tr><td align='left' valign='top' style='overflow:hidden;' nowrap='nowrap' max-width='200px' width='200px'>"+key+"</td><td id='"+key+" Value"+"'>"+val+"</td></tr>";
+  
+  document.getElementById('Smartdashboard Table Result').innerHTML+=html;
+
+  document.getElementById('Smartdashboard Label').value="";
+  document.getElementById('Smartdashboard Value').value=""; 
 }
 
-function AddSmartDashboardData(Label, Value){
-  Label="aaa"
-  Value="BBB"
-		var html="";
-		
-		html="<tr><td>"+Label+"</td><td>"+Value+"</td></tr>";
-		
-		document.getElementById('Smartdashboard Table Result').innerHTML+=html;
- 
-		document.getElementById('Smartdashboard Label').value="";
-		document.getElementById('Smartdashboard Value').value=""; 
+function updateSmartDashboardData(key, val){
+  key = key.slice(16)
+  document.getElementById(key+" Value").innerHTML = val;
 }
