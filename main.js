@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu, ipcMain, shell } = require("electron");
+const { app, BrowserWindow, Menu, ipcMain, shell, ipcRenderer } = require("electron");
 const path = require("path");
 const config = require("./config.json");
 const { autoUpdater } = require("electron-updater");

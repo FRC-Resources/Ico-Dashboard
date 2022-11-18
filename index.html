@@ -35,13 +35,20 @@
         <div class="column">
             <div class="box">
                 <table class="table is-striped table is-narrow is-bordered">
-                    <thead>
+                    <thead id="Smartdashboard thead">
                         <tr>
                             <th id="Smartdashboard Label">Smartdashboard Label</th>
                             <th id="Smartdashboard Value">Smartdashboard Value</th>
                         </tr>
                     </thead>
                     <tbody id="Smartdashboard Table Result"></tbody>
+                    <thead id="Shuffleboard thead">
+                        <tr>
+                            <th id="Shuffleboard Label">Shuffleboard Label</th>
+                            <th id="Shuffleboard Value">Shuffleboard Value</th>
+                        </tr>
+                    </thead>
+                    <tbody id="Shuffleboard Table Result"></tbody>
                 </table>
                 <table class="table is-striped table is-narrow is-bordered">
                     <thead>
@@ -65,19 +72,11 @@
                     </tbody>
                 </table>
                 <br>
-                <button id="connect" class="button is-success" onclick="connect()">connect</button>
-                <button id="connect" class="button is-link" onclick="console.log(values)">log values</button>
+                <button id="connect" class="button is-success" onclick="wolfebyteConnect()">connect</button>
+                <button id="disconnect" class="button is-warning" onclick="wolfebyteDisconnect()">disconnect</button>
             </div>
         </div>
       </div>
-          <div class="col-md-8">
-              <table class="table table-bordered">
-                  <thead class="alert-info">
-                      
-                  </thead>
-                  
-              </table>
-          </div>
-      </div>
+    </div>
 </body>
 </html>
