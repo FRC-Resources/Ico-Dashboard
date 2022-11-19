@@ -1,6 +1,5 @@
 const { app, BrowserWindow, Menu, ipcMain, shell } = require('electron');
 const path = require('path');
-const config = require('./config.json');
 const { autoUpdater } = require('electron-updater');
 const log = require('electron-log');
 const settings = require('./assets/js/settings.js');
