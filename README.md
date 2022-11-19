@@ -8,10 +8,10 @@ To build the Ico dashboard yourself clone the repository and then in your termin
 Within your users appdata and then ico folder you will find a config.json containing your team number which can be changed from inside the dashboard, data on the dashboards last location and size, & most importantly the options to disable or enable showing smartdashboard & shuffleboard data, to hide specifc data from either, and to hide parts of the key for either to keep the dashboard clean.
 
 An example of a config file in use is included under the name example-config.json, you may need to copy in the following to your config file if it is causing a crash for any of these not being found.
-    "splashScreen": true,
+    	"splashScreen": true,
 	"ShowSmartdashboardData": true,
 	"SmartdashboardIgnoreStrings": [],
 	"SmartdashboardHideSubstrings": [],
 	"ShowShuffleboardData": true,
 	"ShuffleboardIgnoreStrings": [],
-	"ShuffleboardHideSubstrings": [],
+	"ShuffleboardHideSubstrings": []
