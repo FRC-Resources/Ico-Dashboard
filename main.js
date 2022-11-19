@@ -116,7 +116,7 @@ function createWindow() {
         label: 'Help',
         submenu: [
           {label: 'Github Page',
-          click() {shell.openExternal('https://github.com/FRC-Resources/Foundation')}
+          click() {shell.openExternal('https://github.com/FRC-Resources')}
           },
           {label: 'NI Drive Station',
           click() {shell.openExternal('https://docs.wpilib.org/en/stable/docs/software/driverstation/driver-station.html')}
