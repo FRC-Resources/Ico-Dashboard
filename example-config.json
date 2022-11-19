@@ -1,0 +1,38 @@
+{
+	"windowSize": [
+		800,
+		650
+	],
+	"windowPosition": [
+		0,
+		0
+	],
+	"teamNumber": "0",
+	"splashScreen": true,
+	"ShowSmartdashboardData": true,
+	"SmartdashboardIgnoreStrings": [
+		"Field/.controllable",
+		"Field/.type",
+		"Field/.name"
+	],
+	"SmartdashboardHideSubstrings": [
+		"Field/"
+	],
+	"ShowShuffleboardData": true,
+	"ShuffleboardIgnoreStrings": [
+		"Properties/Label Position",
+		"Properties/Glyph",
+		"Size",
+		"PreferredComponent",
+		"Properties/Show Glyph",
+		".type",
+		".metadata/Tabs"
+	],
+	"ShuffleboardHideSubstrings": [
+		"Auto/P2P Navigation/",
+		"Auto/P2P Navigation/Mid Point/",
+		"Auto/P2P Navigation/Start Position/",
+		"Auto/P2P Navigation/Target Position/"
+	],
+	"FMSControlString": "/FMSInfo/FMSControlData"
+}
