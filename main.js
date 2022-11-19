@@ -4,12 +4,15 @@ const config = require('./config.json');
 const { autoUpdater } = require('electron-updater');
 const log = require('electron-log');
 const settings = require('./assets/js/settings.js');
-
+const Store = require("electron-store");
+const storage = new Store();
 function createWindow() {
   const bounds = settings.getWindowSize();
   const position = settings.getWindowPositon();
+  var teamNumber = settings.getTeamNumber();
   console.log(bounds);
   console.log(position);
+  console.log(settings.getTeamNumber());
   const mainWindow = new BrowserWindow({
     width: bounds[0],
     height: bounds[1],
@@ -30,7 +33,7 @@ function createWindow() {
     maximizable: false,
     resizable: false,
   });
-  if (config.splashScreen) {
+  if (storage.get("splashScreen")) {
     splashWindow.loadFile("./assets/html/splash.html");
     mainWindow.loadFile("index.html");
     mainWindow.once("ready-to-show", () => {
@@ -46,11 +49,23 @@ function createWindow() {
     });
   }
 
-  //needs to be here to access "mainWindow"
+  //teamNumberIPC
+  ipcMain.on('teamNumber:request', function (e){
+    mainWindow.webContents.send('teamNumber:is', teamNumber);
+  })
   ipcMain.on('teamNumber:is', function(e, teamNumber) {
+    settings.saveTeamNumber(teamNumber);
     mainWindow.webContents.send('teamNumber:is', teamNumber);
     const window = BrowserWindow.getFocusedWindow();
     window.close();
+  })
+
+  // Window resize memory
+  mainWindow.on("resized", () => {
+    settings.saveBounds(mainWindow.getSize());
+  })
+  mainWindow.on("moved", () => {
+    settings.savePosition(mainWindow.getPosition());
   })
 
   //menu system on windows just need this for the camera integration right now
@@ -119,17 +134,6 @@ function createWindow() {
     ])
     Menu.setApplicationMenu(menu);
   }
-  function getMainWindow(){
-    return mainWindow;
-  }
-
-  // Window resize memory
-  mainWindow.on("resized", () => {
-    settings.saveBounds(mainWindow.getSize());
-  })
-  mainWindow.on("moved", () => {
-    settings.savePosition(mainWindow.getPosition());
-  })
 }
 app.on("ready", () => setTimeout(createWindow, 400));
 //app.disableHardwareAcceleration();

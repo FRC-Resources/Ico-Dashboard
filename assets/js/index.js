@@ -3,19 +3,16 @@ const electron = require('electron');
 const {ipcRenderer} = electron;
 const ntClient = require('wolfbyte-networktables');
 const client = new ntClient.Client();
-var config = null;
-try {
-  config = require('./config.json');
-} catch (error) {
-  console.log(error.stack)
-}
+const Store = require("electron-store");
+const storage = new Store();
 
 // config data
-const ShowSmartdashboardData = config.ShowSmartdashboardData;
-const ShowShuffleboardData = config.ShowShuffleboardData;
+const ShowSmartdashboardData = storage.get("ShowSmartdashboardData");
+const ShowShuffleboardData = storage.get("ShowShuffleboardData");
 
 //Team number setup
-var savedTeamNumber = null;
+var savedTeamNumber;
+ipcRenderer.send('teamNumber:request');
 const teamNumberTextParagraph = document.getElementById('teamNumberText');
 teamNumberText = document.createTextNode(null);
 teamNumberTextParagraph.appendChild(teamNumberText);
@@ -99,7 +96,7 @@ function wolfebyteConnect(disconnect) {
             document.getElementById("AllainceColour").innerHTML = "Blue";
           }
         }
-        if (key == config.FMSControlString && (id == "add" || id=="update")) {
+        if (key == storage.get("FMSControlString") && (id == "add" || id=="update")) {
           switch(val) {
             case 32:
               document.getElementById("CurrentMode").innerHTML = "Teleop Disabled";
@@ -189,11 +186,11 @@ if(!ShowShuffleboardData){
 
 function addSmartDashboardData(key, val){
   key = key.slice(16)
-  if(!config.SmartdashboardIgnoreStrings.includes(key)){
+  if(!storage.get("SmartdashboardIgnoreStrings").includes(key)){
     console.log("ASMD, Label: "+key+" Value: "+val)
     var html="";
     var label=key;
-    config.SmartdashboardHideSubstrings.some(string => {
+    storage.get("SmartdashboardHideSubstrings").some(string => {
       if (key.includes(string)) {
         label=key.slice(string.length);
       }});
@@ -214,11 +211,11 @@ function updateSmartDashboardData(key, val){
 
 function addShuffleboardData(key, val){
   key = key.slice(14)
-  if(!config.ShuffleboardIgnoreStrings.some(string => key.includes(string))){
+  if(!storage.get("ShuffleboardIgnoreStrings").some(string => key.includes(string))){
     console.log("ASMD, Label: "+key+" Value: "+val)
     var html="";
     var label=key;
-    config.ShuffleboardHideSubstrings.some(string => {
+    storage.get("ShuffleboardHideSubstrings").some(string => {
       if (key.includes(string)) {
         label=key.slice(string.length);
       }});
