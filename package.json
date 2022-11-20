@@ -1,7 +1,7 @@
 {
   "name": "ico",
-  "version": "2022.11.18",
-  "description": "An FRC dashboard built on electron",
+  "version": "2022.11.20",
+  "description": "An FRC Dashboard",
   "main": "main.js",
   "author": "Autumn O. <62668093+Autumn-Ou@users.noreply.github.com>",
   "license": "MIT",

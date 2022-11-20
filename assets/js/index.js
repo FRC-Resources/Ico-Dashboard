@@ -10,6 +10,10 @@ const storage = new Store();
 const ShowSmartdashboardData = storage.get("ShowSmartdashboardData");
 const ShowShuffleboardData = storage.get("ShowShuffleboardData");
 
+// Field setup
+var fieldc;
+var fieldctx;
+
 //Team number setup
 var savedTeamNumber;
 ipcRenderer.send('teamNumber:request');
@@ -66,7 +70,7 @@ ipcRenderer.on('teamNumber:is', function(e, teamNumber) {
 function disconectVideoStream() {
   console.log('disconnect');
   img.src = './assets/img/no-cam-feed.jpg';
-  console.log(savedTeamNumber)
+  console.log(savedTeamNumber);
 }
 
 //Network Table disconnect
@@ -188,6 +192,19 @@ function addSmartDashboardData(key, val){
   key = key.slice(16)
   if(!storage.get("SmartdashboardIgnoreStrings").includes(key)){
     console.log("ASMD, Label: "+key+" Value: "+val)
+    if(key == "Field/Robot"){
+      if(document.getElementById("Field Canvas") == null){
+        console.log('Adding Field');
+        var html="";
+        html = "<canvas id='Field Canvas' style='border:2px solid black' width='660' height='324'></canvas>";
+        document.getElementById("Button Break").insertAdjacentHTML("beforebegin", html);
+        fieldc = document.getElementById("Field Canvas");
+        fieldctx = fieldc.getContext("2d");
+        console.log(fieldc);
+        console.log(fieldctx);
+        console.log("adding Field");
+      }
+    }
     var html="";
     var label=key;
     storage.get("SmartdashboardHideSubstrings").some(string => {
@@ -207,6 +224,10 @@ function addSmartDashboardData(key, val){
 function updateSmartDashboardData(key, val){
   key = key.slice(16)
   document.getElementById(key+" Value").innerHTML = val;
+  if(key == "Field/Robot"){
+    console.log("Field draw "+ val);
+    drawRobotRot(val[0], val[1], val[2], 20, 20);
+  }
 }
 
 function addShuffleboardData(key, val){
@@ -241,4 +262,18 @@ function deleteSmartDashboardHTML(){
 function deleteShuffleboardHTML(){
   document.getElementById('Shuffleboard thead').remove();
   document.getElementById('Shuffleboard Table Result').innerHTML=""
+}
+
+// Field display
+function drawRobotRot(x ,y, theta, width, height) {
+  fieldctx.clearRect(0, 0, 660, 324);
+  fieldctx.save();
+  fieldctx.translate((x*41.25)+width/2, (324+(-y*41.25))+height/2);
+  fieldctx.rotate(-theta * Math.PI / 180);
+  drawRobot(24, 20);
+  fieldctx.restore();
+}
+function drawRobot(length, width){
+  fieldctx.fillStyle = 'rgba(0,0,255,0.5)';
+  fieldctx.fillRect(length/2*(-1), width/2*(-1), length, width);
 }
