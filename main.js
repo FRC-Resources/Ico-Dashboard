@@ -110,6 +110,22 @@ function createWindow() {
             TNwin.on('close', function() {win = null})
             TNwin.show()
           }},
+          {label: 'Settings Menu',
+          click() {
+            const TNwin = new BrowserWindow({frame: true, 
+              transparent: true, 
+              width: 800, 
+              height: 650, 
+              show: true,
+              alwaysOnTop: true,
+              webPreferences: {
+              nodeIntegration: true,
+              contextIsolation: false,
+            }});
+            TNwin.loadFile("./assets/html/settings.html");
+            TNwin.on('close', function() {win = null})
+            TNwin.show()
+          }},
         ]
       },
       {
