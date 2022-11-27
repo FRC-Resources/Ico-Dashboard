@@ -23,16 +23,16 @@ function createWindow() {
     },
   });
   mainWindow.setPosition(position[0], position[1]);
-  const splashWindow = new BrowserWindow({
-    width: 256,
-    height: 256,
-    show: true,
-    frame: false,
-    transparent: true,
-    maximizable: false,
-    resizable: false,
-  });
   if (storage.get("splashScreen")) {
+      const splashWindow = new BrowserWindow({
+        width: 256,
+        height: 256,
+        show: true,
+        frame: false,
+        transparent: true,
+        maximizable: false,
+        resizable: false,
+      });
     splashWindow.loadFile("./assets/html/splash.html");
     mainWindow.loadFile("index.html");
     mainWindow.once("ready-to-show", () => {
