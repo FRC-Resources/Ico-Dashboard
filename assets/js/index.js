@@ -6,6 +6,11 @@ const client = new ntClient.Client();
 const Store = require("electron-store");
 const storage = new Store();
 
+// Constants for control mode data
+const teleop = [32, 33, 48, 49];
+const autonomous = [34, 35, 50, 51];
+const test = [36, 37, 52, 53];
+
 // config data
 const ShowSmartdashboardData = storage.get("ShowSmartdashboardData");
 const ShowShuffleboardData = storage.get("ShowShuffleboardData");
@@ -14,7 +19,7 @@ const ShowShuffleboardData = storage.get("ShowShuffleboardData");
 var fieldc;
 var fieldctx;
 
-//Team number setup
+// Team number setup
 var savedTeamNumber;
 ipcRenderer.send('teamNumber:request');
 const teamNumberTextParagraph = document.getElementById('teamNumberText');
@@ -89,12 +94,10 @@ function wolfebyteConnect(disconnect) {
     }, "0.0.0.0");
   }
   client.addListener((key, val, type, id) => {
-    
     if(disconnect) {
       client.removeListener(key)
       return;
     }
-
     if (key.startsWith("/FMSInfo/")) {
       if (key == "/FMSInfo/IsRedAlliance" && (id == "add" || id == "update")) {
         if(val) {
@@ -104,11 +107,6 @@ function wolfebyteConnect(disconnect) {
         }
       }
       if (key == storage.get("FMSControlString") && (id == "add" || id == "update")) {
-        
-        const teleop = [32, 33, 48, 49];
-        const autonomous = [34, 35, 50, 51];
-        const test = [36, 37, 52, 53];
-
         let mode = "Unknown";
         let enabled = "Disabled";
         let fms = "Disconnected";
@@ -126,7 +124,6 @@ function wolfebyteConnect(disconnect) {
 
         document.getElementById("CurrentMode").innerHTML = `${mode} ${enabled}`;
         document.getElementById("isFMSConnected").innerHTML = fms;
-
       }
     } else if (key.startsWith("/SmartDashboard/")) {
       if(ShowSmartdashboardData){
