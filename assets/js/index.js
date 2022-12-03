@@ -6,6 +6,11 @@ const client = new ntClient.Client();
 const Store = require("electron-store");
 const storage = new Store();
 
+// Constants for control mode data
+const teleop = [32, 33, 48, 49];
+const autonomous = [34, 35, 50, 51];
+const test = [36, 37, 52, 53];
+
 // config data
 const ShowSmartdashboardData = storage.get("ShowSmartdashboardData");
 const ShowShuffleboardData = storage.get("ShowShuffleboardData");
@@ -14,7 +19,7 @@ const ShowShuffleboardData = storage.get("ShowShuffleboardData");
 var fieldc;
 var fieldctx;
 
-//Team number setup
+// Team number setup
 var savedTeamNumber;
 ipcRenderer.send('teamNumber:request');
 const teamNumberTextParagraph = document.getElementById('teamNumberText');
@@ -91,91 +96,54 @@ function wolfebyteConnect(disconnect) {
   client.addListener((key, val, type, id) => {
     if(disconnect) {
       client.removeListener(key)
-    } else {
-      if (key.startsWith("/FMSInfo/")) {
-        if (key == "/FMSInfo/IsRedAlliance" && (id == "add" || id=="update")) {
-          if(val) {
-            document.getElementById("AllainceColour").innerHTML = "Red";
-          } else {
-            document.getElementById("AllainceColour").innerHTML = "Blue";
-          }
-        }
-        if (key == storage.get("FMSControlString") && (id == "add" || id=="update")) {
-          switch(val) {
-            case 32:
-              document.getElementById("CurrentMode").innerHTML = "Teleop Disabled";
-              document.getElementById("isFMSConnected").innerHTML = "Disconnected";
-              break;
-            case 33:
-              document.getElementById("CurrentMode").innerHTML = "Teleop Enabled";
-              document.getElementById("isFMSConnected").innerHTML = "Disconnected";
-              break;
-            case 34:
-              document.getElementById("CurrentMode").innerHTML = "Autonomous Disabled";
-              document.getElementById("isFMSConnected").innerHTML = "Disconnected";
-              break;
-            case 35:
-              document.getElementById("CurrentMode").innerHTML = "Autonomous Enabled";
-              document.getElementById("isFMSConnected").innerHTML = "Disconnected";
-              break;
-            case 36:
-              document.getElementById("CurrentMode").innerHTML = "Test Disabled";
-              document.getElementById("isFMSConnected").innerHTML = "Disconnected";
-              break;
-            case 37:
-              document.getElementById("CurrentMode").innerHTML = "Test Enabled";
-              document.getElementById("isFMSConnected").innerHTML = "Disconnected";
-              break;
-            case 48:
-              document.getElementById("CurrentMode").innerHTML = "Teleop Disabled";
-              document.getElementById("isFMSConnected").innerHTML = "Connected";
-              break;
-            case 49:
-              document.getElementById("CurrentMode").innerHTML = "Teleop Enabled";
-              document.getElementById("isFMSConnected").innerHTML = "Connected";
-              break;
-            case 50:
-              document.getElementById("CurrentMode").innerHTML = "Autonomous Disabled";
-              document.getElementById("isFMSConnected").innerHTML = "Connected";
-              break;
-            case 51:
-              document.getElementById("CurrentMode").innerHTML = "Autonomous Enabled";
-              document.getElementById("isFMSConnected").innerHTML = "Connected";
-              break;
-            case 52:
-              document.getElementById("CurrentMode").innerHTML = "Test Disabled";
-              document.getElementById("isFMSConnected").innerHTML = "Connected";
-              break;
-            case 53:
-              document.getElementById("CurrentMode").innerHTML = "Test Enabled";
-              document.getElementById("isFMSConnected").innerHTML = "Connected";
-              break;
-          }
+      return;
+    }
+    if (key.startsWith("/FMSInfo/")) {
+      if (key == "/FMSInfo/IsRedAlliance" && (id == "add" || id == "update")) {
+        if(val) {
+          document.getElementById("AllainceColour").innerHTML = "Red";
+        } else {
+          document.getElementById("AllainceColour").innerHTML = "Blue";
         }
       }
-      if (key.startsWith("/SmartDashboard/")) {
-        if(ShowSmartdashboardData){
-          if (id == "add") {
-            console.log({ key, val, type, id });
-            addSmartDashboardData(key, val);
-          }
-          if (id == "update") {
-            updateSmartDashboardData(key, val);
-          }
+      if (key == storage.get("FMSControlString") && (id == "add" || id == "update")) {
+        let mode = "Unknown";
+        let enabled = "Disabled";
+        let fms = "Disconnected";
+
+        if(teleop.includes(val)) {
+          mode = "Teleop";
+        } else if(autonomous.includes(val)) {
+          mode = "Autonomous";
+        } else if(test.includes(val)) {
+          mode = "Test";
+        }
+
+        if(val % 2 == 1) enabled = "Enabled";
+        if(val >= 48) fms = "Connected";
+
+        document.getElementById("CurrentMode").innerHTML = `${mode} ${enabled}`;
+        document.getElementById("isFMSConnected").innerHTML = fms;
+      }
+    } else if (key.startsWith("/SmartDashboard/")) {
+      if(ShowSmartdashboardData){
+        if (id == "add") {
+          console.log({ key, val, type, id });
+          addSmartDashboardData(key, val);
+        }
+        if (id == "update") {
+          updateSmartDashboardData(key, val);
         }
       }
-      if (key.startsWith("/Shuffleboard/")) {
-        if(ShowShuffleboardData){
-          if (id == "add") {
-            console.log({ key, val, type, id });
-            addShuffleboardData(key, val);
-          }
-          if (id == "update") {
-            updateShuffleboardData(key, val);
-          }
+    } else if (key.startsWith("/Shuffleboard/")) {
+      if(ShowShuffleboardData){
+        if (id == "add") {
+          console.log({ key, val, type, id });
+          addShuffleboardData(key, val);
         }
-      } else {
-        return;
+        if (id == "update") {
+          updateShuffleboardData(key, val);
+        }
       }
     }
   });
