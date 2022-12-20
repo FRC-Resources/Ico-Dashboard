@@ -59,8 +59,7 @@ function submitIPForm(e) {
     } else {
         IPandPortHTTP = ('http://' + IPandPort + '/stream.mjpg');
     }
-    console.log(IPandPortHTTP);
-    img.src = IPandPortHTTP;
+    img.setAttribute("src", IPandPortHTTP);
 }
 
 //Team number changes
