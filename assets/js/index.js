@@ -70,7 +70,7 @@ function submitIPForm(e) {
     }
     console.log(IPandPortHTTP);
     console.log(IP)
-    img.src = IPandPortHTTP;
+    img.setAttribute("src", IPandPortHTTP);
 }
 
 //Team number changes
