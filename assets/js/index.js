@@ -33,6 +33,7 @@ let img = document.getElementById('videoStream');
 const IPForm = document.getElementById('IPandPortForm');
 IPForm.addEventListener('submit', submitIPForm);
 let IPandPortHTTP = null;
+let IP = null;
 disconnectBtn.addEventListener('click', disconectVideoStream);
 connectBtn.addEventListener('click', submitIPForm);
 
@@ -41,25 +42,34 @@ function submitIPForm(e) {
     e.preventDefault();
     const IPandPort = document.getElementById('IPandPort').value;
     if(IPandPort == "") {
-        if(savedTeamNumber < 10) {
+        if(savedTeamNumber == 'localhost') {
+          IPandPortHTTP = ('http://localhost:1181/stream.mjpg');
+          IP = ('0.0.0.0');
+        }
+        else if(savedTeamNumber < 10) {
           let teamNumberIPandPort = ('0.0' + savedTeamNumber);
           IPandPortHTTP = ('http://10.' + teamNumberIPandPort + '.2:1181/stream.mjpg');
+          IP = ('10.' +  teamNumberIPandPort + '.2');
         }
         else if(savedTeamNumber < 100) {
           let teamNumberIPandPort = ('0.' + savedTeamNumber);
           IPandPortHTTP = ('http://10.' + teamNumberIPandPort + '.2:1181/stream.mjpg');
+          IP = ('10.' +  teamNumberIPandPort + '.2');
         }
         else if(savedTeamNumber < 1000) {
           let teamNumberIPandPort = ('0'+savedTeamNumber.substring(0,1) + '.' + savedTeamNumber.substring(1,3));
           IPandPortHTTP = ('http://10.' + teamNumberIPandPort + '.2:1181/stream.mjpg');
+          IP = ('10.' +  teamNumberIPandPort + '.2');
         } else {
           let teamNumberIPandPort = (savedTeamNumber.substring(0,2) + '.' + savedTeamNumber.substring(2,4));
           IPandPortHTTP = ('http://10.' + teamNumberIPandPort + '.2:1181/stream.mjpg');
+          IP = ('10.' +  teamNumberIPandPort + '.2');
         }
     } else {
         IPandPortHTTP = ('http://' + IPandPort + '/stream.mjpg');
     }
     console.log(IPandPortHTTP);
+    console.log(IP)
     img.src = IPandPortHTTP;
 }
 
@@ -91,7 +101,7 @@ function wolfebyteConnect(disconnect) {
   if(!disconnect){
     client.start((isConnected, err) => {
       console.log({ isConnected, err });
-    }, "0.0.0.0");
+    }, IP);
   }
   client.addListener((key, val, type, id) => {
     if(disconnect) {
