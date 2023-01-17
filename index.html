@@ -17,7 +17,7 @@
                 <p id="teamNumberText">Team Number: </p>
                 <br/>
                 <div class="box">
-                    <img src="./assets/img/no-cam-feed.jpg" id="videoStream" width="1080px"></img>
+                    <img src="./assets/img/no-cam-feed.jpg" id="videoStream" width="460px"></img>
                 </div>
                 
                 <form id="IPandPortForm">
@@ -71,9 +71,27 @@
                         </tr>
                     </tbody>
                 </table>
+                <table class="table is-striped table is-narrow is-bordered">
+                    <thead>
+                        <tr>
+                            <th colspan="2">Pathfinding</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td align="left" valign="top" style="overflow:hidden;" nowrap="nowrap" max-width="200px" width="200px">Target X</td>
+                            <td><span style="text-align: center;"><input type="text" name="Y" id="Target X"></span></td>
+                        </tr>
+                        <tr>
+                            <td align="left" valign="top" style="overflow:hidden;" nowrap="nowrap" max-width="200px" width="200px">Target Y</td>
+                            <td><span style="text-align: center;"><input type="text" name="Y" id="Target Y"></span></td>
+                        </tr>
+                    </tbody>
+                </table>
                 <br id="Button Break">
                 <button id="connect" class="button is-success" onclick="wolfebyteConnect()">connect</button>
                 <button id="disconnect" class="button is-warning" onclick="wolfebyteDisconnect()">disconnect</button>
+                <button id="pathfindBtn" class="button is-danger" onclick="setTargetLocation()">pathfind</button>
             </div>
         </div>
       </div>

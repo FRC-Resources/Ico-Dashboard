@@ -255,3 +255,11 @@ function drawRobot(length, width){
   fieldctx.fillStyle = 'rgba(0,0,255,0.5)';
   fieldctx.fillRect(length/2*(-1), width/2*(-1), length, width);
 }
+
+function setTargetLocation(){
+  var x = document.getElementById("Target X").value;
+  var y = document.getElementById("Target Y").value;
+  console.log(x,y);
+  client.Assign(x, "/SmartDashboard/Target X");
+  client.Assign(y, "/SmartDashboard/Target Y");
+}
