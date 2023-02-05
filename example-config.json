@@ -1,38 +1,30 @@
 {
 	"windowSize": [
-		800,
-		650
+		1192,
+		1000
 	],
 	"windowPosition": [
-		0,
-		0
+		1836,
+		132
 	],
-	"teamNumber": "0",
+	"teamNumber": "localhost",
 	"splashScreen": true,
 	"ShowSmartdashboardData": true,
-	"SmartdashboardIgnoreStrings": [
-		"Field/.controllable",
-		"Field/.type",
-		"Field/.name"
-	],
+	"SmartdashboardIgnoreStrings": [],
 	"SmartdashboardHideSubstrings": [
+		"vision-main/Sim Field/",
 		"Field/"
 	],
-	"ShowShuffleboardData": true,
-	"ShuffleboardIgnoreStrings": [
-		"Properties/Label Position",
-		"Properties/Glyph",
-		"Size",
-		"PreferredComponent",
-		"Properties/Show Glyph",
-		".type",
-		".metadata/Tabs"
-	],
-	"ShuffleboardHideSubstrings": [
-		"Auto/P2P Navigation/",
-		"Auto/P2P Navigation/Mid Point/",
-		"Auto/P2P Navigation/Start Position/",
-		"Auto/P2P Navigation/Target Position/"
-	],
-	"FMSControlString": "/FMSInfo/FMSControlData"
+	"ShowShuffleboardData": false,
+	"ShuffleboardIgnoreStrings": [],
+	"ShuffleboardHideSubstrings": [],
+	"FMSControlString": "/FMSInfo/FMSControlData",
+	"keys": [
+		["/SmartDashboard/Current Draw","NetworkTableTypeInfos.kDouble",0.5,0],
+		["/SmartDashboard/Bat. Volt.","NetworkTableTypeInfos.kDouble",0.5,2],
+		["/SmartDashboard/vision-main/Sim Field/bestPoses","NetworkTableTypeInfos.kDouble[]",0.05,3],
+		["/SmartDashboard/Field/Robot", "NetworkTableTypeInfos.kDouble[]",0.05,3],
+		["/FMSInfo/FMSControlData","NetworkTableTypeInfos.kInt",5, null],
+		["/FMSInfo/IsRedAlliance","NetworkTableTypeInfos.kBoolean", 10, null]
+	]
 }

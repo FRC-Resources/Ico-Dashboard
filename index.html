@@ -26,10 +26,8 @@
                     </div>
                 </form>
                 <br>
-                <div class="field">
-                    <button id="connectBtn" class="button is-success"  type="onclick">Connect</button>
-                    <button id="disconnectBtn" type="onclick" class="button is-warning">Disconnect</button>
-                </div>
+                <button id="connect-video-stream" class="button is-success" onclick="connectVideoStream()">connect</button>
+                <button id="disconnect-video-stream" class="button is-warning" onclick="disconectVideoStream()">disconnect</button>
             </div>
         </div>
         <div class="column">
@@ -71,27 +69,9 @@
                         </tr>
                     </tbody>
                 </table>
-                <table class="table is-striped table is-narrow is-bordered">
-                    <thead>
-                        <tr>
-                            <th colspan="2">Pathfinding</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td align="left" valign="top" style="overflow:hidden;" nowrap="nowrap" max-width="200px" width="200px">Target X</td>
-                            <td><span style="text-align: center;"><input type="text" name="Y" id="Target X"></span></td>
-                        </tr>
-                        <tr>
-                            <td align="left" valign="top" style="overflow:hidden;" nowrap="nowrap" max-width="200px" width="200px">Target Y</td>
-                            <td><span style="text-align: center;"><input type="text" name="Y" id="Target Y"></span></td>
-                        </tr>
-                    </tbody>
-                </table>
                 <br id="Button Break">
-                <button id="connect" class="button is-success" onclick="wolfebyteConnect()">connect</button>
-                <button id="disconnect" class="button is-warning" onclick="wolfebyteDisconnect()">disconnect</button>
-                <button id="pathfindBtn" class="button is-danger" onclick="setTargetLocation()">pathfind</button>
+                <button id="connect" class="button is-success" onclick="ntcoreConnect()">connect</button>
+                <button id="disconnect" class="button is-warning" onclick="ntcoreDisconnect()">disconnect</button>
             </div>
         </div>
       </div>

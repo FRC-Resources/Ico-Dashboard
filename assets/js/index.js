@@ -1,10 +1,10 @@
 //Required and config
 const electron = require('electron');
 const {ipcRenderer} = electron;
-const ntClient = require('wolfbyte-networktables');
-const client = new ntClient.Client();
 const Store = require("electron-store");
 const storage = new Store();
+//nt4 ts client
+const { NetworkTables, NetworkTableTypeInfos, NetworkTablesTopic } = require('ntcore-ts-client');
 
 // Constants for control mode data
 const teleop = [32, 33, 48, 49];
@@ -27,20 +27,16 @@ teamNumberText = document.createTextNode(null);
 teamNumberTextParagraph.appendChild(teamNumberText);
 
 //Camera system setup
-const connectBtn = document.getElementById('connectBtn');
-const disconnectBtn = document.getElementById('disconnectBtn');
 let img = document.getElementById('videoStream');
 const IPForm = document.getElementById('IPandPortForm');
-IPForm.addEventListener('submit', submitIPForm);
+IPForm.addEventListener('submit', getIP);
 let IPandPortHTTP = null;
 let IP = null;
-disconnectBtn.addEventListener('click', disconectVideoStream);
-connectBtn.addEventListener('click', submitIPForm);
 
 //Connect to camera
-function submitIPForm(e) {
-    e.preventDefault();
+function getIP() {
     const IPandPort = document.getElementById('IPandPort').value;
+    var IP;
     if(IPandPort == "") {
         if(savedTeamNumber == 'localhost') {
           IPandPortHTTP = ('http://localhost:1181/stream.mjpg');
@@ -70,7 +66,7 @@ function submitIPForm(e) {
     }
     console.log(IPandPortHTTP);
     console.log(IP)
-    img.setAttribute("src", IPandPortHTTP);
+    return IP;
 }
 
 //Team number changes
@@ -81,6 +77,13 @@ ipcRenderer.on('teamNumber:is', function(e, teamNumber) {
   teamNumberTextParagraph.replaceChildren(teamNumberText, teamNumberText)
 })
 
+//Conect to camera
+function connectVideoStream() {
+  console.log('connect');
+  img.src = IPandPortHTTP;
+  console.log(savedTeamNumber);
+}
+
 //Disconnect from camera
 function disconectVideoStream() {
   console.log('disconnect');
@@ -89,74 +92,78 @@ function disconectVideoStream() {
 }
 
 //Network Table disconnect
-function wolfebyteDisconnect() {
-  wolfebyteConnect(true);
+function ntcoreDisconnect() {
+  //currently not working
+  console.log('THIS IS BUGGED, dicsonnecting from ntcore not iplimented just refresh the page for now');
   document.getElementById('Smartdashboard Table Result').innerHTML=""
   document.getElementById('Shuffleboard Table Result').innerHTML=""
-  client.stop();
 }
+//Network table connection and output
+function ntcoreConnect() {
+  IP = getIP();
+  ntcore = NetworkTables.createInstanceByURI(uri = IP, port = 5810);
 
-//Network Table connection and output
-function wolfebyteConnect(disconnect) {
-  if(!disconnect){
-    client.start((isConnected, err) => {
-      console.log({ isConnected, err });
-    }, IP);
+  // from storage read the array of keys (0), their types (1), and the rate (2) to subscribe to
+  const keys = storage.get("keys", []);
+
+  // create a map of topics
+  const topics = new Map();
+  // subscribe to all keys
+  for (const key of keys) {
+    const topic = ntcore.createTopic(key[0], key[1]);
+    topic.subscribe((value) => {
+      //console.log(`Got ${key[0]}: ${value}`);
+      console.log(key[0] + " " + value);
+
+      if (key[0].startsWith("/FMSInfo/")) {
+        if (key[0] == "/FMSInfo/IsRedAlliance") {
+          if(value) {
+            document.getElementById("AllainceColour").innerHTML = "Red";
+          } else {
+            document.getElementById("AllainceColour").innerHTML = "Blue";
+          }
+        }
+        if (key[0] == storage.get("FMSControlString")) {
+          let mode = "Unknown";
+          let enabled = "Disabled";
+          let fms = "Disconnected";
+  
+          if(teleop.includes(value)) {
+            mode = "Teleop";
+          } else if(autonomous.includes(value)) {
+            mode = "Autonomous";
+          } else if(test.includes(value)) {
+            mode = "Test";
+          }
+  
+          if(value % 2 == 1) enabled = "Enabled";
+          if(value >= 48) fms = "Connected";
+  
+          document.getElementById("CurrentMode").innerHTML = `${mode} ${enabled}`;
+          document.getElementById("isFMSConnected").innerHTML = fms;
+        }
+      } else if (key[0].startsWith("/SmartDashboard/")) {
+        if(ShowSmartdashboardData){
+          tempKey = key.slice(16)
+          try {
+            updateSmartDashboardData(key[0], value, key[3]);
+          } catch {
+            addSmartDashboardData(key[0], value);
+          }
+        }
+      } else if (key[0].startsWith("/Shuffleboard/")) {
+        if(ShowShuffleboardData){
+          tempKey = key.slice(14)
+          try {
+            updateShuffleboardData(key[0], value);
+          } catch {
+            addShuffleboardData(key[0], value);
+          }
+        }
+      }
+    }, true, {periodic: key[2]});
+    topics.set(key, topic);
   }
-  client.addListener((key, val, type, id) => {
-    if(disconnect) {
-      client.removeListener(key)
-      return;
-    }
-    if (key.startsWith("/FMSInfo/")) {
-      if (key == "/FMSInfo/IsRedAlliance" && (id == "add" || id == "update")) {
-        if(val) {
-          document.getElementById("AllainceColour").innerHTML = "Red";
-        } else {
-          document.getElementById("AllainceColour").innerHTML = "Blue";
-        }
-      }
-      if (key == storage.get("FMSControlString") && (id == "add" || id == "update")) {
-        let mode = "Unknown";
-        let enabled = "Disabled";
-        let fms = "Disconnected";
-
-        if(teleop.includes(val)) {
-          mode = "Teleop";
-        } else if(autonomous.includes(val)) {
-          mode = "Autonomous";
-        } else if(test.includes(val)) {
-          mode = "Test";
-        }
-
-        if(val % 2 == 1) enabled = "Enabled";
-        if(val >= 48) fms = "Connected";
-
-        document.getElementById("CurrentMode").innerHTML = `${mode} ${enabled}`;
-        document.getElementById("isFMSConnected").innerHTML = fms;
-      }
-    } else if (key.startsWith("/SmartDashboard/")) {
-      if(ShowSmartdashboardData){
-        if (id == "add") {
-          console.log({ key, val, type, id });
-          addSmartDashboardData(key, val);
-        }
-        if (id == "update") {
-          updateSmartDashboardData(key, val);
-        }
-      }
-    } else if (key.startsWith("/Shuffleboard/")) {
-      if(ShowShuffleboardData){
-        if (id == "add") {
-          console.log({ key, val, type, id });
-          addShuffleboardData(key, val);
-        }
-        if (id == "update") {
-          updateShuffleboardData(key, val);
-        }
-      }
-    }
-  });
 }
 
 if(!ShowSmartdashboardData){
@@ -199,8 +206,15 @@ function addSmartDashboardData(key, val){
   } 
 }
 
-function updateSmartDashboardData(key, val){
+function updateSmartDashboardData(key, val, decimals=2){
   key = key.slice(16)
+  // check if val is a number and round it if it is
+  // IF AN ARRAY BUT NOT CONTAINING A NUMBER UHHHHH IDK MAN NOT SURE IF ITLL EXPLODE
+  // TODO: FIX THIS
+  // but like, why would you send an array of strings to smartdashboard
+  if(decimals != null && !isNaN(val) || Array.isArray(val) && !isNaN(val[0])){
+    val = roundTo(val, decimals)
+  }
   document.getElementById(key+" Value").innerHTML = val;
   if(key == "Field/Robot"){
     console.log("Field draw "+ val);
@@ -262,4 +276,32 @@ function setTargetLocation(){
   console.log(x,y);
   client.Assign(x, "/SmartDashboard/Target X");
   client.Assign(y, "/SmartDashboard/Target Y");
+}
+
+function roundTo(n, digits) {
+  // if digits is not defined or is not a number set to 0
+  if (typeof digits !== 'number') {
+      digits = 0;
+  }
+  // if n is an array apply to each element
+  if (Array.isArray(n)) {
+      return n.map(function (x) {
+          return roundTo(x, digits);
+      });
+  }
+  var negative = false;
+  if (digits === undefined) {
+      digits = 0;
+  }
+  if (n < 0) {
+      negative = true;
+      n = n * -1;
+  }
+  var multiplicator = Math.pow(10, digits);
+  n = parseFloat((n * multiplicator).toFixed(11));
+  n = (Math.round(n) / multiplicator).toFixed(digits);
+  if (negative) {
+      n = (n * -1).toFixed(digits);
+  }
+  return n;
 }

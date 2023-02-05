@@ -10,8 +10,12 @@ Within your users/appdata/roaming (for windows) and then ico folder you will fin
 An example of a config file in use is included under the name example-config.json, you may need to copy in the following to your config file if it is causing a crash for any of these not being found.
     	"splashScreen": true,
 	"ShowSmartdashboardData": true,
-	"SmartdashboardIgnoreStrings": [],
 	"SmartdashboardHideSubstrings": [],
 	"ShowShuffleboardData": true,
-	"ShuffleboardIgnoreStrings": [],
 	"ShuffleboardHideSubstrings": []
+
+With the new NT4 protocol you must include a,
+"keys": [
+		["/SmartDashboard/Current Draw","NetworkTableTypeInfos.kDouble",0.5,0]
+		]
+array where the first value is the string you want to dsiplay, the second is the data type, the third is the update frequency, and the fourth is how many decimal places you want to round; that applies only to numbers and arrays of numbers and should otherwise be set null.
